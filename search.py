@@ -18,6 +18,13 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from util import Stack
+from util import Queue
+
+class Node:
+    def __init__(self, state, parent):
+        self.state = state
+        self.parent = parent
 
 class SearchProblem:
     """
@@ -72,26 +79,54 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def build_path(node):
+    res = []
+    currentNode = node
+    while currentNode.parent != None:
+        res.insert(0, currentNode.state[1])
+        currentNode = currentNode.parent
+
+    return res
+
 def depthFirstSearch(problem: SearchProblem):
-    """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-    """
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    frontier = Stack()
+    visited = []
+
+    frontier.push(Node((problem.getStartState(), None, None), None))
+    
+    while True:
+        currentNode = frontier.pop()
+        currentState = currentNode.state
+
+        if problem.isGoalState(currentState[0]):
+            return build_path(currentNode)
+
+        visited.append(currentState[0])
+        for i in problem.getSuccessors(currentState[0]):
+            if i[0] not in visited:
+                frontier.push(Node(i, currentNode))
 
 def breadthFirstSearch(problem: SearchProblem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = Queue()
+    visited = []
+
+    frontier.push(Node((problem.getStartState(), None, None), None))
+    
+    while True:
+        currentNode = frontier.pop()
+        currentState = currentNode.state
+
+        if problem.isGoalState(currentState[0]):
+            return build_path(currentNode)
+
+        visited.append(currentState[0])
+        for i in problem.getSuccessors(currentState[0]):
+            if i[0] not in visited:
+                frontier.push(Node(i, currentNode))
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
