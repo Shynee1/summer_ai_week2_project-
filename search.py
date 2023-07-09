@@ -20,6 +20,8 @@ Pacman agents (in searchAgents.py).
 import util
 from util import Stack
 from util import Queue
+from util import PriorityQueue
+import searchAgents
 
 class Node:
     def __init__(self, state, parent):
@@ -133,18 +135,34 @@ def uniformCostSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def nullHeuristic(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-    """
-    return 0
+def getTotalCost(node):
+    if node.parent == None:
+        return 0
+    return getTotalCost(node.parent) + node.state[2]
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
+def aStarSearch(problem: SearchProblem):
+    frontier = PriorityQueue()
+    visited = []
+
+    frontier.push(Node((problem.getStartState(), None, None), None), 0)
+    
+    while True:
+        currentNode = frontier.pop()
+        currentState = currentNode.state
+
+        if problem.isGoalState(currentState[0]):
+            return build_path(currentNode)
+
+        visited.append(currentState[0])
+        for i in problem.getSuccessors(currentState[0]):
+            if i[0] not in visited:
+                node = Node(i, currentNode)
+                frontier.push(node, getTotalCost(node) + heuristic(i[0], problem.goal))
+
+
+def heuristic(position, goal):
+    return ((goal[0] - position[0]) ** 2 + (goal[1] - position[1]) ** 2) ** 0.5
 
 # Abbreviations
 bfs = breadthFirstSearch
