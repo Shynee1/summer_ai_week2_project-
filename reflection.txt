@@ -1,0 +1,6 @@
+I thought this project was relatively simple. 
+Implementing the basic search algorithm was very easy, and I was able to transfer it to all of the specific algorithms. 
+One challenge I faced was interpreting the output of the built-in pacman functions.
+I solved this issue by reading the project description and printing the various outputs.
+For the A* search, I used a heuristic that calculated the geometric distance from the current position to the end goal.
+This calculation was performed using the euclidean distance formula and was very efficient. 
